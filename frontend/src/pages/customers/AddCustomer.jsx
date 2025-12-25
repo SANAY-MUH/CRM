@@ -11,7 +11,7 @@ const AddCustomer = () => {
     name: "",
     email: "",
     phone: "",
-    status: "New"
+    status: "New" 
   });
 
   const [error, setError] = useState("");
