@@ -6,6 +6,7 @@ import Button from "../../components/ui/Button";
 const AddCustomer = () => {
   const navigate = useNavigate();
 
+  const [customer, setCustomer] = useState([])
   const [customerData, setCustomerData] = useState({
     name: "",
     email: "",
@@ -36,6 +37,15 @@ const AddCustomer = () => {
       setError("All fields are required");
       return;
     }
+    setCustomer((prev) => {
+      let newCustomer = {
+      name: customerData.name,
+      email: customerData.email,
+      phone: customerData.phone,
+      status: customerData.status,
+      }
+      return [...prev, newCustomer]
+    })
 
     // Normally API call will be here
     console.log("New Customer:", customerData);
