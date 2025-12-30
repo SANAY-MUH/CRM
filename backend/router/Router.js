@@ -6,7 +6,7 @@ import { addCustomer, deleteCustomer, readCustomer, updateCustomer } from "../co
 
 router.route("/Customer").get(readCustomer)
 router.route("/Customer").post(addCustomer)
-router.route("/Customer").put(updateCustomer)
-router.route("/Customer").delete(deleteCustomer)
+router.route("/Customer/:id").put(updateCustomer)
+router.route("/Customer/:id").delete(deleteCustomer)
 
 export default router;

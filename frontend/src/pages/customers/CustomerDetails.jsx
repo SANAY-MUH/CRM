@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router";
 import Button from "../../components/ui/Button";
 import CustomerCard from "../../components/customers/CustomerCard";
+import api from "../../services/api";
 
 const CustomerDetails = () => {
   const { id } = useParams();
@@ -9,29 +10,23 @@ const CustomerDetails = () => {
   const [customer, setCustomer] = useState(null);
 
   // Dummy data (replace with API call later)
-  const dummyCustomers = [
-    {
-      _id: "1",
-      name: "Ali",
-      email: "ali@example.com",
-      phone: "1234567890",
-      status: "New",
-    },
-    {
-      _id: "2",
-      name: "Sara",
-      email: "sara@example.com",
-      phone: "0987654321",
-      status: "In Progress",
-    },
-  ];
+  const getData = async () => {
+    try {
+      const resp = await api.get(`/api/Customer/${id}`);
+      setCustomer({
+        name: resp.data.customer.name,
+        email: resp.data.customer.email,
+        phone: resp.data.customer.phone,
+        status: resp.data.customer.status,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
-    const foundCustomer = dummyCustomers.find(
-      (c) => c._id === id
-    );
-    setCustomer(foundCustomer);
-  }, [id]);
+      getData();
+    }, [id]);
 
   if (!customer) {
     return (

@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import Input from "../../components/ui/input";
+import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
+import api from "../../services/api.js";
 
 const AddCustomer = () => {
   const navigate = useNavigate();
 
-  const [customer, setCustomer] = useState([])
+  // const [customer, setCustomer] = useState([])
   const [customerData, setCustomerData] = useState({
     name: "",
     email: "",
@@ -25,10 +26,10 @@ const AddCustomer = () => {
   };
 
   // Handle form submit
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
+
     e.preventDefault();
 
-    // Simple validation
     if (
       !customerData.name ||
       !customerData.email ||
@@ -37,18 +38,14 @@ const AddCustomer = () => {
       setError("All fields are required");
       return;
     }
-    setCustomer((prev) => {
-      let newCustomer = {
-      name: customerData.name,
-      email: customerData.email,
-      phone: customerData.phone,
-      status: customerData.status,
-      }
-      return [...prev, newCustomer]
-    })
-
-    // Normally API call will be here
-    console.log("New Customer:", customerData);
+    
+    try{
+      const resp = await api.post("/api/Customer", customerData)
+      console.log(resp) 
+    }
+    catch(error){
+      console.log(error)
+    }
 
     // Redirect to customer list
     navigate("/customers");

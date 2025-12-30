@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
-import Input from "../../components/ui/input";
+import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
+import api from "../../services/api";
 
 const EditCustomer = () => {
   const { id } = useParams();
@@ -16,33 +17,24 @@ const EditCustomer = () => {
 
   const [error, setError] = useState("");
 
-  // Dummy data (replace with API call later)
-  const dummyCustomers = [
-    {
-      _id: "1",
-      name: "Ali",
-      email: "ali@example.com",
-      phone: "1234567890",
-      status: "New",
-    },
-    {
-      _id: "2",
-      name: "Sara",
-      email: "sara@example.com",
-      phone: "0987654321",
-      status: "In Progress",
-    },
-  ];
+  const getData = async () => {
+    try {
+      const resp = await api.get(`/api/Customer/${id}`);
+      setCustomerData({
+        name: resp.data.customer.name,
+        email: resp.data.customer.email,
+        phone: resp.data.customer.phone,
+        status: resp.data.customer.status,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
-    // Find the customer by ID
-    const foundCustomer = dummyCustomers.find((c) => c._id === id);
-    if (foundCustomer) {
-      setCustomerData(foundCustomer);
-    }
+    getData();
   }, [id]);
 
-  // Handle input change
   const handleChange = (e) => {
     setCustomerData({
       ...customerData,
@@ -50,20 +42,15 @@ const EditCustomer = () => {
     });
   };
 
-  // Handle form submit
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!customerData.name || !customerData.email || !customerData.phone) {
-      setError("All fields are required");
-      return;
+    try {
+      await api.put(`/api/Customer/${id}`, customerData);
+      navigate("/customers");
+    } catch (err) {
+      setError(err?.response?.data?.message || "Something went wrong");
     }
-
-    // API call to update customer would go here
-    console.log("Updated Customer:", customerData);
-
-    // Redirect to customer list
-    navigate("/customers");
   };
 
   return (
@@ -80,7 +67,6 @@ const EditCustomer = () => {
           name="name"
           value={customerData.name}
           onChange={handleChange}
-          placeholder="Enter customer name"
         />
 
         <Input
@@ -89,7 +75,6 @@ const EditCustomer = () => {
           name="email"
           value={customerData.email}
           onChange={handleChange}
-          placeholder="Enter email address"
         />
 
         <Input
@@ -97,10 +82,8 @@ const EditCustomer = () => {
           name="phone"
           value={customerData.phone}
           onChange={handleChange}
-          placeholder="Enter phone number"
         />
 
-        {/* Status Dropdown */}
         <div className="mb-4">
           <label className="block mb-1 text-sm font-medium text-gray-700">
             Status

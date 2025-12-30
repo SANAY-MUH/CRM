@@ -20,8 +20,7 @@ export const addCustomer = async (req, res) => {
 export const readCustomer = async(req, res) => {
     try{
         const customers = await Customer.find()
-    res.json({message: "Reading All Customers!"})
-    customers
+    res.json({message: "Reading All Customers!", customers})
     }
     catch(error){
         console.log(error)
@@ -29,17 +28,48 @@ export const readCustomer = async(req, res) => {
     }
 }
 
+export const readOneCustomer = async (req, res) => {
+    try{
+        const {id} = req.params
+        const customer = await Customer.findById(id)
+        if (!product) {
+            return res.status(404).json({
+                message: "No product found with the provided ID"
+            });
+        }
+
+        res.status(200).json({
+            message: "Single product fetched Successfully",
+            product
+        })
+    }
+    catch(error){
+        console.log(error);
+
+        if (error.name === "CastError") {
+            return res.status(400).json({
+                message: "Invalid Customer ID format"
+            });
+        }
+
+        res.status(500).json({
+            message: "Internal Server error",
+        })
+    }
+    
+}
+
 export const updateCustomer = async (req, res) => {
     try{
     const {id} = req.params;
     const existingCustomer = await Customer.findById(id)
 
-    if(!existingCustomer){
-        res.json({message: "No Customer Found for the Provided ID!"})
+    if(!updateCustomer){
+        return res.json({message: "No Customer Found for the Provided ID!"})
     }
 
-    const UpdatedCustomer = await Customer.findByIdAndUpdate(id, {new: true})
-    res.json({message: "Customer Updated!"})
+    const UpdatedCustomer = await Customer.findByIdAndUpdate(id, req.body, {new: true})
+    res.json({message: "Customer Updated!", customer: updateCustomer})
     }
     catch(error){
         console.log(error);

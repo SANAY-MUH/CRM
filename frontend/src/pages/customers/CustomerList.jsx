@@ -3,45 +3,23 @@ import { Link } from "react-router";
 import Button from "../../components/ui/Button";
 import CustomerCard from "../../components/customers/CustomerCard";
 import CustomerStatusSummary from "../../components/customers/CustomerStatusSummary";
+import api from "../../services/api.js";
 
 const CustomerList = () => {
-  const [customers, setCustomers] = useState([]);
+  const [customerData, setCustomerData] = useState([])
 
-  // Dummy customer data (replace with API call later)
-  const dummyCustomers = [
-    {
-      _id: "1",
-      name: "Ali",
-      email: "ali@example.com",
-      phone: "1234567890",
-      status: "New",
-    },
-    {
-      _id: "2",
-      name: "Sara",
-      email: "sara@example.com",
-      phone: "0987654321",
-      status: "In Progress",
-    },
-    {
-      _id: "3",
-      name: "Ahmed",
-      email: "ahmed@example.com",
-      phone: "1122334455",
-      status: "Contacted",
-    },
-    {
-      _id: "4",
-      name: "Zain",
-      email: "zain@example.com",
-      phone: "5566778899",
-      status: "Closed",
-    },
-  ];
+  const fetchData = async() => {
+    try{
+      const resp = await api.get("/api/Customer")
+      setCustomerData(resp.data.customers)
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
 
   useEffect(() => {
-    // Simulate API call
-    setCustomers(dummyCustomers);
+    fetchData()
   }, []);
 
   return (
@@ -54,12 +32,12 @@ const CustomerList = () => {
       </div>
 
       {/* Status Summary */}
-      <CustomerStatusSummary customers={customers} />
+      <CustomerStatusSummary customers={customerData} />
 
       {/* Customer Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {customers.length > 0 ? (
-          customers.map((customer) => (
+        {customerData.length > 0 ? (
+          customerData.map((customer) => (
             <CustomerCard key={customer._id} customer={customer} />
           ))
         ) : (
