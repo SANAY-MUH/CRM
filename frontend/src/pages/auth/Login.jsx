@@ -13,7 +13,6 @@ const Login = () => {
 
   const [error, setError] = useState("");
 
-  // Handle input change
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -21,38 +20,37 @@ const Login = () => {
     });
   };
 
-  // Handle form submit
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Simple validation
     if (!formData.email || !formData.password) {
       setError("Please fill in all fields");
       return;
     }
 
-    // Normally API call will be here
     console.log("Login Data:", formData);
-
-    // Temporary navigation after login
     navigate("/dashboard");
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white p-6 rounded shadow w-full max-w-md">
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 px-6">
+      <div className="bg-white p-12 rounded-2xl shadow-2xl w-full max-w-xl">
 
-        <h2 className="text-2xl font-bold mb-4 text-center">
-          Login
+        <h2 className="text-4xl font-extrabold mb-6 text-center text-gray-800">
+          Welcome Back
         </h2>
 
+        <p className="text-center text-gray-600 text-lg mb-8">
+          Login to access your CRM dashboard
+        </p>
+
         {error && (
-          <p className="text-red-500 text-sm mb-3">
+          <p className="text-red-500 text-base mb-6 text-center">
             {error}
           </p>
         )}
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="space-y-6">
           <Input
             label="Email"
             type="email"
@@ -71,7 +69,7 @@ const Login = () => {
             placeholder="Enter your password"
           />
 
-          <Button type="submit" className="w-full mt-2">
+          <Button type="submit" className="w-full py-4 text-xl">
             Login
           </Button>
         </form>

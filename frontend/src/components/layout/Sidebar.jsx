@@ -3,14 +3,17 @@ import { Link } from "react-router";
 
 const Sidebar = () => {
   return (
-    <aside className="w-64 bg-gray-800 text-white min-h-screen p-6">
-      <h2 className="text-lg font-bold mb-6">Menu</h2>
+    <aside className="w-72 bg-gradient-to-b from-gray-900 to-gray-800 text-white min-h-screen px-8 py-8 shadow-xl">
+      
+      <h2 className="text-2xl font-bold mb-10 tracking-wide">
+        Menu
+      </h2>
 
-      <ul className="flex flex-col gap-4">
+      <ul className="flex flex-col gap-5">
         <li>
           <Link
             to="/dashboard"
-            className="block px-4 py-2 rounded hover:bg-gray-700"
+            className="block px-5 py-3 rounded-lg text-lg font-medium hover:bg-gray-700/70 transition duration-200"
           >
             Dashboard
           </Link>
@@ -19,7 +22,7 @@ const Sidebar = () => {
         <li>
           <Link
             to="/customers"
-            className="block px-4 py-2 rounded hover:bg-gray-700"
+            className="block px-5 py-3 rounded-lg text-lg font-medium hover:bg-gray-700/70 transition duration-200"
           >
             Customers
           </Link>
@@ -28,7 +31,7 @@ const Sidebar = () => {
         <li>
           <Link
             to="/customers/add"
-            className="block px-4 py-2 rounded hover:bg-gray-700"
+            className="block px-5 py-3 rounded-lg text-lg font-medium hover:bg-gray-700/70 transition duration-200"
           >
             Add Customer
           </Link>
@@ -37,7 +40,7 @@ const Sidebar = () => {
         <li>
           <Link
             to="/login"
-            className="block px-4 py-2 rounded hover:bg-gray-700"
+            className="block px-5 py-3 rounded-lg text-lg font-medium hover:bg-gray-700/70 transition duration-200"
           >
             Login
           </Link>

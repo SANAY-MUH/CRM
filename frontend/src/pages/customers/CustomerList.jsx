@@ -6,21 +6,33 @@ import CustomerStatusSummary from "../../components/customers/CustomerStatusSumm
 import api from "../../services/api.js";
 
 const CustomerList = () => {
-  const [customerData, setCustomerData] = useState([])
+  const [customerData, setCustomerData] = useState([]);
 
-  const fetchData = async() => {
-    try{
-      const resp = await api.get("/api/Customer")
-      setCustomerData(resp.data.customers)
+  // Fetch all customers
+  const fetchData = async () => {
+    try {
+      const resp = await api.get("/api/Customer");
+      setCustomerData(resp.data.customers);
+    } catch (error) {
+      console.log(error);
     }
-    catch(error){
-      console.log(error)
-    }
-  }
+  };
 
   useEffect(() => {
-    fetchData()
+    fetchData();
   }, []);
+
+  // Handle delete
+  const handleDelete = async (id) => {
+    try {
+      await api.delete(`/api/Customer/${id}`);
+
+      // Remove deleted customer from UI immediately
+      setCustomerData((prev) => prev.filter((c) => c._id !== id));
+    } catch (error) {
+      console.error("Error deleting customer:", error.response?.data || error.message);
+    }
+  };
 
   return (
     <div className="p-6">
@@ -38,7 +50,11 @@ const CustomerList = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {customerData.length > 0 ? (
           customerData.map((customer) => (
-            <CustomerCard key={customer._id} customer={customer} />
+            <CustomerCard
+              key={customer._id}
+              customer={customer}
+              onDelete={handleDelete} // Pass delete handler
+            />
           ))
         ) : (
           <p className="text-gray-500">No customers found.</p>

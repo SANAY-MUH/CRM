@@ -32,7 +32,7 @@ export const readOneCustomer = async (req, res) => {
     try{
         const {id} = req.params
         const customer = await Customer.findById(id)
-        if (!product) {
+        if (!customer) {
             return res.status(404).json({
                 message: "No product found with the provided ID"
             });
@@ -40,7 +40,7 @@ export const readOneCustomer = async (req, res) => {
 
         res.status(200).json({
             message: "Single product fetched Successfully",
-            product
+            customer
         })
     }
     catch(error){

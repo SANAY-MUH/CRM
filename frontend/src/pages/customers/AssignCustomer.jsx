@@ -1,83 +1,114 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import Button from "../../components/ui/Button";
+import api from "../../services/api";
 
 const AssignCustomer = () => {
   const navigate = useNavigate();
-  const { id } = useParams(); // customer id from URL
+  const { id } = useParams();
 
-  // Dummy team members (later can come from API)
-  const teamMembers = [
-    "Ali (CRM Manager)",
-    "Ahmed (Team Member)",
-    "Sara (Team Member)",
-    "Zain (Admin)"
-  ];
+  const [customer, setCustomer] = useState(null); // Current customer
+  const [teamMembers, setTeamMembers] = useState([]); // All team members
+  const [selectedMember, setSelectedMember] = useState(""); // Selected team member ID
+  const [message, setMessage] = useState(""); // Error / success messages
+  const [loading, setLoading] = useState(true);
 
-  const [selectedMembers, setSelectedMembers] = useState([]);
-  const [error, setError] = useState("");
-
-  // Handle checkbox selection
-  const handleCheckboxChange = (member) => {
-    if (selectedMembers.includes(member)) {
-      setSelectedMembers(
-        selectedMembers.filter((m) => m !== member)
-      );
-    } else {
-      setSelectedMembers([...selectedMembers, member]);
+  // Fetch customer
+  const fetchCustomer = async () => {
+    try {
+      const res = await api.get(`/api/Customer/${id}`);
+      setCustomer(res.data.customer);
+    } catch (err) {
+      console.error("Error fetching customer:", err.response?.data || err.message);
     }
   };
 
-  // Handle form submit
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  // Fetch team members
+  const fetchTeamMembers = async () => {
+    try {
+      const res = await api.get("/api/Team");
+      setTeamMembers(res.data.teams || []);
+    } catch (err) {
+      console.error("Error fetching team members:", err.response?.data || err.message);
+    }
+  };
 
-    if (selectedMembers.length === 0) {
-      setError("Please select at least one team member");
+  useEffect(() => {
+    Promise.all([fetchCustomer(), fetchTeamMembers()]).finally(() => setLoading(false));
+  }, [id]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setMessage("");
+
+    if (!selectedMember) {
+      setMessage("Please select a team member to assign this customer.");
       return;
     }
 
-    // API call will be here later
-    console.log("Customer ID:", id);
-    console.log("Assigned To:", selectedMembers);
+    try {
+      // Find the selected team member
+      const member = teamMembers.find((m) => m._id === selectedMember);
 
-    navigate("/customers");
+      if (!member) {
+        setMessage("Selected team member not found.");
+        return;
+      }
+
+      // Check if customer already assigned
+      if (member.customerAssign.includes(customer._id)) {
+        setMessage("This customer is already assigned to the selected team member.");
+        return;
+      }
+
+      // Check if already 3 customers assigned
+      if (member.customerAssign.length >= 3) {
+        setMessage("This team member already has 3 assigned customers.");
+        return;
+      }
+
+      // Update the member's customerAssign array
+      const updatedCustomerAssign = [...member.customerAssign, customer._id];
+
+      await api.put(`/api/Team/${member._id}`, {
+        customerAssign: updatedCustomerAssign,
+      });
+
+      setMessage("Customer assigned successfully!");
+      navigate("/dashboard/teamMemberList"); // redirect after success
+    } catch (err) {
+      console.error("Error assigning customer:", err.response?.data || err.message);
+      setMessage("Failed to assign customer. Please try again.");
+    }
   };
+
+  if (loading) return <p className="text-gray-500">Loading...</p>;
+  if (!customer) return <p className="text-red-500">Customer not found.</p>;
 
   return (
     <div className="max-w-xl mx-auto bg-white p-6 rounded shadow">
-      <h2 className="text-2xl font-bold mb-4">
-        Assign Customer
-      </h2>
+      <h2 className="text-2xl font-bold mb-4">Assign Customer</h2>
 
-      <p className="text-sm text-gray-500 mb-4">
-        Customer ID: {id}
+      <p className="mb-4 text-gray-700">
+        Customer: <strong>{customer.name}</strong> ({customer.email})
       </p>
 
-      {error && (
-        <p className="text-red-500 text-sm mb-3">
-          {error}
-        </p>
-      )}
+      {message && <p className="mb-3 text-red-500">{message}</p>}
 
       <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label className="block mb-2 font-medium">
-            Select Team Members
-          </label>
-
-          {teamMembers.map((member, index) => (
-            <div key={index} className="flex items-center mb-2">
-              <input
-                type="checkbox"
-                className="mr-2"
-                checked={selectedMembers.includes(member)}
-                onChange={() => handleCheckboxChange(member)}
-              />
-              <span>{member}</span>
-            </div>
+        <label className="block mb-2 font-medium">Select Team Member</label>
+        <select
+          value={selectedMember}
+          onChange={(e) => setSelectedMember(e.target.value)}
+          className="w-full border p-2 rounded mb-4"
+        >
+          <option value="">-- Select --</option>
+          {teamMembers.map((member) => (
+            <option key={member._id} value={member._id}>
+              {member.name} (Assigned: {member.customerAssign.length})
+            </option>
           ))}
-        </div>
+        </select>
 
         <Button type="submit" className="w-full">
           Assign Customer

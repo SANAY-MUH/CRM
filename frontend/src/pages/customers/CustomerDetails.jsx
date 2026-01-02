@@ -11,18 +11,14 @@ const CustomerDetails = () => {
 
   // Dummy data (replace with API call later)
   const getData = async () => {
-    try {
-      const resp = await api.get(`/api/Customer/${id}`);
-      setCustomer({
-        name: resp.data.customer.name,
-        email: resp.data.customer.email,
-        phone: resp.data.customer.phone,
-        status: resp.data.customer.status,
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  try {
+    const resp = await api.get(`/api/Customer/${id}`);
+    setCustomer(resp.data.customer);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 
   useEffect(() => {
       getData();

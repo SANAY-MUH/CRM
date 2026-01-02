@@ -1,51 +1,36 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router";
-import CustomerStatusSummary from "../../components/customers/CustomerStatusSummary";
-import CustomerCard from "../../components/customers/CustomerCard";
+import React, { useState } from "react";
+import { Link, Outlet } from "react-router";
+
 import Button from "../../components/ui/Button";
+import TeamMemberList from "./TeamMemberList";
 
 const Dashboard = () => {
-  const [customers, setCustomers] = useState([]);
-
-  // Dummy data (replace with API call later)
-  const dummyCustomers = [
-    { _id: "1", name: "Ali", email: "ali@example.com", status: "New" },
-    { _id: "2", name: "Sara", email: "sara@example.com", status: "In Progress" },
-    { _id: "3", name: "Ahmed", email: "ahmed@example.com", status: "Contacted" },
-    { _id: "4", name: "Zain", email: "zain@example.com", status: "Closed" },
-  ];
-
-  useEffect(() => {
-    // Simulate fetching customer data
-    setCustomers(dummyCustomers);
-  }, []);
+  const [teamMembers, setTeamMembers] = useState([]);
 
   return (
-    <div className="p-6">
-
+    <div className="min-h-screen bg-gray-50 px-8 py-6">
+      
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        <Link to="/customers/add">
-          <Button>Add Customer</Button>
+      <div className="flex justify-between items-center mb-10 bg-white p-6 rounded-2xl shadow-md">
+        <div>
+          <h1 className="text-4xl font-extrabold text-gray-800">
+            Team Dashboard
+          </h1>
+          <p className="text-gray-500 mt-1 text-lg">
+            Manage your team members and assignments
+          </p>
+        </div>
+
+        <Link to="/dashboard/addTeamMember">
+          <Button className="px-6 py-3 text-lg">
+            + Add Team Member
+          </Button>
         </Link>
       </div>
 
-      {/* Customer Status Summary */}
-      <CustomerStatusSummary customers={customers} />
-
-      {/* Recent Customers */}
-      <div className="mt-6">
-        <h2 className="text-xl font-semibold mb-4">Recent Customers</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {customers.length > 0 ? (
-            customers.map((customer) => (
-              <CustomerCard key={customer._id} customer={customer} />
-            ))
-          ) : (
-            <p className="text-gray-500">No customers available</p>
-          )}
-        </div>
+      {/* Content */}
+      <div className="bg-white p-8 rounded-2xl shadow-sm">
+        <Outlet />
       </div>
 
     </div>
