@@ -6,7 +6,7 @@ import { useNavigate } from "react-router";
 
 const AddTeamMember = () => {
 
-    const navigate=useNavigate()
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -24,11 +24,11 @@ const AddTeamMember = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-        await api.post("/api/Team",formData)
-        navigate("/dashboard")
+      await api.post("/api/Team", formData)
+      navigate("/dashboard")
     } catch (error) {
-        console.log("error creating task : ",error?.response?.data?.message)
-        
+      console.log("error creating task : ", error?.response?.data?.message)
+
     }
 
 

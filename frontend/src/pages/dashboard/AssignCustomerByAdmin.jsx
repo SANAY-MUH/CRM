@@ -9,7 +9,7 @@ const AssignCustomerByAdmin = () => {
 
   const [loading, setLoading] = useState(true);
   const [teamMember, setTeamMember] = useState(null);
-  const [customers, setCustomers] = useState([]);           // all customers
+  const [customers, setCustomers] = useState([]);
   const [selectedCustomers, setSelectedCustomers] = useState([]); // assigned (max 3)
 
   /* ================= FETCH TEAM MEMBER ================= */

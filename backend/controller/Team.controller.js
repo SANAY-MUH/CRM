@@ -1,8 +1,6 @@
 import Team from "../model/Team.model.js";
 
-/**
- * ADD TEAM MEMBER
- */
+
 export const addTeam = async (req, res) => {
   try {
     const { name, email, status, customerAssign } = req.body;
@@ -34,9 +32,7 @@ export const addTeam = async (req, res) => {
   }
 };
 
-/**
- * READ ALL TEAM MEMBERS
- */
+
 export const readTeam = async (req, res) => {
   try {
     const teams = await Team.find();
@@ -53,9 +49,7 @@ export const readTeam = async (req, res) => {
   }
 };
 
-/**
- * READ SINGLE TEAM MEMBER
- */
+
 export const readOneTeam = async (req, res) => {
   try {
     const { id } = req.params;
@@ -87,9 +81,7 @@ export const readOneTeam = async (req, res) => {
   }
 };
 
-/**
- * UPDATE TEAM MEMBER
- */
+
 export const updateTeam = async (req, res) => {
   try {
     const { id } = req.params;
@@ -125,9 +117,7 @@ export const updateTeam = async (req, res) => {
   }
 };
 
-/**
- * DELETE TEAM MEMBER
- */
+
 export const deleteTeam = async (req, res) => {
   try {
     const { id } = req.params;
